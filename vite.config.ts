@@ -18,9 +18,23 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
+    rollupOptions: {
+      output: {
+        // Чанки worker-сборки (TF.js, heic, _commonjsHelpers) тоже не должны
+        // начинаться с '_' — см. комментарий в build.rollupOptions ниже.
+        chunkFileNames: 'assets/chunk-[name]-[hash].js',
+      },
+    },
   },
   build: {
     target: 'es2020',
     chunkSizeWarningLimit: 4096,
+    rollupOptions: {
+      output: {
+        // Префикс 'chunk-' гарантирует, что имя файла не начнётся с '_'
+        // (файлы вида _commonjsHelpers-*.js Jekyll на GitHub Pages отдаёт как 404).
+        chunkFileNames: 'assets/chunk-[name]-[hash].js',
+      },
+    },
   },
 });
