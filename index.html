@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Улучшение изображений · ML в браузере</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <h1>Улучшение изображений</h1>
+        <p class="subtitle">
+          ИИ подбирает яркость, контраст и цветность — обработка целиком в вашем
+          браузере, без загрузки на сервер.
+        </p>
+      </header>
+
+      <main>
+        <section id="dropZone" class="drop-zone">
+          <input type="file" id="fileInput" accept="image/*,.heic,.heif,.bmp" hidden />
+          <div class="drop-inner">
+            <div class="drop-icon">⬆</div>
+            <p class="drop-title">Перетащите изображение сюда</p>
+            <p class="drop-or">или <button id="browseBtn" class="link-btn">выберите файл</button></p>
+            <p class="drop-formats">JPG · PNG · HEIC · BMP · до 15 Мпк</p>
+          </div>
+        </section>
+
+        <section id="samplesBox" class="samples-box">
+          <p class="samples-title">Или попробуйте на примере:</p>
+          <div class="samples-row">
+            <button class="sample-card" data-sample="dark.jpg">
+              <img src="samples/dark.jpg" alt="Тёмное фото" loading="lazy" />
+              <span>Тёмное</span>
+            </button>
+            <button class="sample-card" data-sample="haze.jpg">
+              <img src="samples/haze.jpg" alt="Фото с дымкой" loading="lazy" />
+              <span>Дымка</span>
+            </button>
+            <button class="sample-card" data-sample="dull.jpg">
+              <img src="samples/dull.jpg" alt="Блёклое фото" loading="lazy" />
+              <span>Блёклые цвета</span>
+            </button>
+          </div>
+        </section>
+
+        <section id="statusBox" class="status-box" hidden>
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+          <div class="status-row">
+            <span id="statusLabel" class="status-label"></span>
+            <span id="statusPercent" class="status-percent"></span>
+            <button id="abortBtn" class="btn btn-ghost">Прервать</button>
+          </div>
+        </section>
+
+        <section id="resultBox" class="result-box" hidden>
+          <div class="compare">
+            <figure>
+              <figcaption>До</figcaption>
+              <img id="beforeImg" alt="Исходное изображение" />
+            </figure>
+            <figure>
+              <figcaption>После</figcaption>
+              <img id="afterImg" alt="Улучшенное изображение" />
+            </figure>
+          </div>
+
+          <div id="paramsBox" class="params-box"></div>
+          <div id="metaBox" class="meta-box"></div>
+
+          <div class="actions">
+            <button id="downloadBtn" class="btn btn-primary">Скачать результат</button>
+            <button id="resetBtn" class="btn btn-ghost">Новое изображение</button>
+          </div>
+        </section>
+
+        <section id="errorBox" class="error-box" hidden></section>
+      </main>
+
+      <footer class="app-footer">
+        <span>Работает локально на TensorFlow.js + WebGL</span>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

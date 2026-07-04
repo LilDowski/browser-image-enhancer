@@ -1,0 +1,14 @@
+# ML-окружение для обучения и конвертации в TensorFlow.js.
+# Контекст: Python 3.12 + Windows. TensorFlow под 3.12 доступен только начиная с
+# 2.16, где Keras 3 — это значение по умолчанию. Конвертеру tensorflowjs нужен
+# Keras 2, поэтому ставим tf-keras и включаем TF_USE_LEGACY_KERAS=1 (см. train.py).
+#
+# Установка (см. setup команды): сначала это, затем tensorflowjs ОТДЕЛЬНО с --no-deps,
+# чтобы pip не тянул tensorflow-decision-forests (нет колёс под Windows):
+#   pip install -r requirements.txt
+#   pip install --no-deps tensorflowjs==4.22.0
+numpy==1.26.4
+tensorflow==2.17.0
+tf-keras==2.17.0
+tensorflow-hub
+pillow

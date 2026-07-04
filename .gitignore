@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+.vite/
+training/.venv/
+training/__pycache__/
+training/data/
+training/artifacts/
+public/test-assets/
+.claude/
