@@ -25,9 +25,20 @@ except Exception:  # noqa: BLE001
 import glob
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import tensorflow as tf
 from tensorflow import keras
+
+
+def load_font(size):
+    """TrueType-шрифт с кириллицей: встроенный шрифт PIL рисует русский текст
+    квадратиками. Ищем системные шрифты, при неудаче — дефолт."""
+    for name in ("segoeui.ttf", "arial.ttf", "tahoma.ttf", "DejaVuSans.ttf"):
+        try:
+            return ImageFont.truetype(name, size)
+        except OSError:
+            continue
+    return ImageFont.load_default()
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PHOTOS = sorted(glob.glob(os.path.join(HERE, "data", "photos", "*.jpg")))
@@ -110,7 +121,9 @@ def main():
     H = head + len(rows) * (cell + lh + pad) + pad
     canvas = Image.new("RGB", (W, H), (18, 21, 27))
     draw = ImageDraw.Draw(canvas)
-    draw.text((pad, 10), "Настоящие фото:  Оригинал  |  Типичная проблема  |  Исправлено ИИ", fill=(232, 234, 237))
+    font_head = load_font(17)
+    font_cap = load_font(13)
+    draw.text((pad, 8), "Настоящие фото:  Оригинал  |  Типичная проблема  |  Исправлено ИИ", fill=(232, 234, 237), font=font_head)
     titles = ["Оригинал", "Проблема", "Исправлено ИИ"]
     y = head
     for name, orig, problem, fixed, p in rows:
@@ -118,8 +131,8 @@ def main():
             x = pad + j * (cell + pad)
             im = Image.fromarray((np.clip(img, 0, 1) * 255).astype("uint8")).resize((cell, cell))
             canvas.paste(im, (x, y))
-            cap = f"{name} — {titles[j]}" if j == 0 else titles[j]
-            draw.text((x + 4, y + cell + 4), cap, fill=(154, 160, 172))
+            cap = name if j == 0 else titles[j]
+            draw.text((x + 4, y + cell + 4), cap, fill=(154, 160, 172), font=font_cap)
         y += cell + lh + pad
     out = os.path.join(OUT, "real_examples.png")
     canvas.save(out)

@@ -25,9 +25,20 @@ import json
 import urllib.request
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import tensorflow as tf
 from tensorflow import keras
+
+
+def load_font(size):
+    """TrueType-шрифт с кириллицей: встроенный шрифт PIL рисует русский текст
+    квадратиками. Ищем системные шрифты, при неудаче — дефолт."""
+    for name in ("segoeui.ttf", "arial.ttf", "tahoma.ttf", "DejaVuSans.ttf"):
+        try:
+            return ImageFont.truetype(name, size)
+        except OSError:
+            continue
+    return ImageFont.load_default()
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 EVAL_DIR = os.path.join(HERE, "data", "eval_photos")
@@ -158,12 +169,14 @@ def save_montage(model, files):
     H = head + len(rows) * (cell + label_h + pad) + pad
     canvas = Image.new("RGB", (W, H), (18, 21, 27))
     draw = ImageDraw.Draw(canvas)
-    draw.text((pad, 10), "Оригинал  |  Испорчено  |  Восстановлено ИИ", fill=(232, 234, 237))
+    font_head = load_font(17)
+    font_cap = load_font(13)
+    draw.text((pad, 8), "Оригинал  |  Испорчено  |  Восстановлено ИИ", fill=(232, 234, 237), font=font_head)
 
     def put(img, x, y, title):
         im = Image.fromarray((np.clip(img, 0, 1) * 255).astype("uint8")).resize((cell, cell))
         canvas.paste(im, (x, y))
-        draw.text((x + 4, y + cell + 4), title, fill=(154, 160, 172))
+        draw.text((x + 4, y + cell + 4), title, fill=(154, 160, 172), font=font_cap)
 
     titles = ["Оригинал", "Испорчено", "Восстановлено"]
     y = head
